@@ -221,8 +221,6 @@ srcs = [
 def gen_exports(target, source, env):
     excludes = ['ftmac.h']
     headers = filter(lambda x: reduce(lambda y, z: y and not x.endswith(z), excludes, True), map(str, source))
-    print "headers = ",
-    print headers
     args = ['apiname.exe', '-w'] + headers
     fo = file(str(target[0]), 'w')
     subprocess.Popen(args, stdout = fo).wait()
