@@ -7,6 +7,7 @@ opts = Variables()
 opts.Add(PathVariable('PREFIX', 'Installation prefix', os.path.expanduser('~/FOSS'), PathVariable.PathIsDirCreate))
 opts.Add(BoolVariable('DEBUG', 'Build with Debugging information', 0))
 opts.Add(PathVariable('PERL', 'Path to the executable perl', r'C:\Perl\bin\perl.exe', PathVariable.PathIsFile))
+opts.Add(BoolVariable('WITH_OSMSVCRT', 'Link with the os supplied msvcrt.dll instead of the one supplied by the compiler (msvcr90.dll, for instance)', 0))
 
 env = Environment(variables = opts,
                   ENV=os.environ, tools = ['default', GBuilder], PDB = 'libfreetype.pdb')
@@ -229,7 +230,7 @@ def gen_exports(target, source, env):
 env.Command('libfreetype.def', Glob('include/freetype/*.h'), gen_exports)
 env.Depends('libfreetype.def', [api_name, 'SConstruct'])
 
-dll_name = 'libfreetype6' + env['LIB_SUFFIX']
+dll_name = 'freetype6' + env['LIB_SUFFIX']
 dll_full_name=dll_name + env['SHLIBSUFFIX']
 env.Append(CFLAGS = env['DEBUG_CFLAGS'])
 dll = env.SharedLibrary(target=[dll_name, 'libfreetype.lib'], source=srcs + ['libfreetype.def'])
