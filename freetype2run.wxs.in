@@ -1,0 +1,16 @@
+<?xml version='1.0'?>
+<Wix xmlns='http://schemas.microsoft.com/wix/2006/wi'>
+   <Module Id='Libfreetype2Run' Language='1033' Version='@VERSION@'>
+      <Package Id='e366e26f-1552-4d94-a7ae-c04dead7fb88' Description='Libfreetype2 runtime package'
+                Comments='This is a windows installer for libfreetype2 library runtime files'
+                Manufacturer='Gnome4Win' InstallerVersion='200' />
+ 
+      <Directory Id='TARGETDIR' Name='SourceDir'>
+		  <Directory Id='dlls' Name='bin'>
+			  <Component Id='dlls' Guid='dd6e924a-97d9-4a23-a20d-aeea9a091303'>
+				  @DLLS@
+			  </Component>
+		  </Directory>
+      </Directory>
+   </Module>
+</Wix>

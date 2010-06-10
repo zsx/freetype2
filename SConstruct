@@ -1,7 +1,7 @@
 # vim: ft=python expandtab
 import os
 import subprocess
-from site_init import GBuilder, Initialize
+from site_init import *
 
 opts = Variables()
 opts.Add(PathVariable('PREFIX', 'Installation prefix', os.path.expanduser('~/FOSS'), PathVariable.PathIsDirCreate))
@@ -247,10 +247,30 @@ env.DotIn('freetype2.pc', 'freetype2.pc.in')
 env.Alias('install', env.Install('$PREFIX/include', ['include/ft2build.h']))
 env.Alias('install', env.Install('$PREFIX/include/freetype2/freetype', Glob('include/freetype/*.h')))
 env.Alias('install', env.Install('$PREFIX/include/freetype2/freetype/config', Glob('include/freetype/config/*.h')))
+h1 = generate_file_element(['ft2build.h'], r'include', env)
+h2 = generate_file_element(map(lambda x: os.path.basename(x.rstr()), Glob('include/freetype/*.h')), r'include/freetype2/freetype', env)
+h3 = generate_file_element(map(lambda x: os.path.basename(x.rstr()), Glob('include/freetype/config/*.h')), r'include/freetype2/freetype/config', env)
+env['DOT_IN_SUBS']['@HEADERS@'] = h1 + h2 + h3
+
 env.Alias('install', env.Install('$PREFIX/bin', dll_full_name))
+env['DOT_IN_SUBS']['@DLLS@'] = generate_file_element(dll_full_name, 'bin', env)
+
 env.Alias('install', env.Install('$PREFIX/lib', 'libfreetype.lib'))
 env.Alias('install', env.InstallAs('$PREFIX/lib/freetype.lib', 'libfreetype.lib'))
+env['DOT_IN_SUBS']['@LIBS@'] = generate_file_element(['freetype.lib', 'libfreetype.lib'], r'lib', env)
+
 env.Alias('install', env.Install('$PREFIX/lib/pkgconfig', 'freetype2.pc'))
+env['DOT_IN_SUBS']['@PCS@'] = generate_file_element('freetype2.pc', 'lib/pkgconfig', env)
 
 if env['DEBUG']:
-	env.Alias('install', env.Install('$PREFIX/pdb', env['PDB']))
+        env.Alias('install', env.Install('$PREFIX/pdb', env['PDB']))
+        env['DOT_IN_SUBS']['@PDBS@'] = '''
+                      <Directory Id='pdb' Name='pdb'>
+                              <Component Id='pdbs' Guid='3bb900be-6024-4ab1-9a3e-112501c422b8'>
+                                      %s 
+                              </Component>
+                      </Directory>''' % generate_file_element(env['PDB'], r'pdb', env)
+env.DotIn('freetype2run.wxs', 'freetype2run.wxs.in')
+env.DotIn('freetype2dev.wxs', 'freetype2dev.wxs.in')
+env.Depends(['freetype2run.wxs', 'freetype2dev.wxs'], 'SConstruct')
+env.Alias('install', env.Install('$PREFIX/wxs', ['freetype2run.wxs', 'freetype2dev.wxs']))

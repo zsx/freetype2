@@ -1,0 +1,27 @@
+<?xml version='1.0'?>
+<Wix xmlns='http://schemas.microsoft.com/wix/2006/wi'>
+   <Module Id='Libfreetype2Dev' Language='1033' Version='@VERSION@'>
+      <Package Id='3b5cfacb-a6e9-48cd-8eb6-4eb4868b4ae1' Description='Libfreetype2 devlopement package'
+                Comments='This is a windows installer for libfreetype2 library devlopment files'
+                Manufacturer='Gnome4Win' InstallerVersion='200' />
+ 
+      <Directory Id='TARGETDIR' Name='SourceDir'>
+		  <Directory Id='include' Name='include'>
+			  <Component Id='headers' Guid='9c6e5ad7-48be-46c0-80e2-ce8e62e0418c'>
+				  @HEADERS@
+			  </Component>
+		  </Directory>
+		  <Directory Id='lib' Name='lib'>
+			  <Component Id='libs' Guid='e8975243-002f-472a-92ac-3162a1bce70c'>
+				  @LIBS@
+			  </Component>
+			  <Directory Id='pkgconfig' Name='pkgconfig'>
+				  <Component Id='pcs' Guid='6313ac14-5492-4960-9585-1ceb0c46f98f'>
+					  @PCS@
+				  </Component>
+			  </Directory>
+		  </Directory>
+                  @PDBS@
+      </Directory>
+   </Module>
+</Wix>
